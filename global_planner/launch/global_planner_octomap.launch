@@ -4,12 +4,12 @@
     <arg name="start_pos_x" default="0.5" />
     <arg name="start_pos_y" default="0.5" />
     <arg name="start_pos_z" default="3.5" />
-    <arg name="world_file_name"    default="simple_obstacle" />
+    <arg name="world_file_name"    default="car_with_poles" />
     <arg name="frame_id"    default="local_origin" />
 
 
     <!-- Global Planner -->
-    <node name="global_planner_node" pkg="global_planner" type="global_planner_node" output="screen"
+    <node name="global_planner_node" pkg="global_planner" type="global_planner_node" output="screen" respawn="true"
           args="$(find global_planner)/resource/random_goals"  >
         <param name="frame_id" type="string" value="$(arg frame_id)" />
         <param name="camera_frame_id" type="string" value="/$(arg camera_frame_id)" />
@@ -23,7 +23,7 @@
 
     <!-- OctoMap Server -->
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
-        <param name="resolution" value="1.0" />
+        <param name="resolution" value="0.5" />
         <!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
         <param name="frame_id" type="string" value="$(arg frame_id)" />
         <!-- maximum range to integrate (speedup!) -->

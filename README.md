@@ -1,3 +1,13 @@
+# Running with Fyuse.Drone
+This will launch iris in a world with obstacles
+* ` roslaunch local_planner local_planner_depth-camera_car_world.launch`
+
+In a new terminal, start the offbaord control node to switch to offboard mode and arm the vehicle
+* ` rosrun offboard_control offboard_control_node`
+
+In another new terminal, start the flight manager to send trajectories (e.g. circular) with key presses
+* `roslaunch flight_manager flight_manager.launch`
+
 # Obstacle Detection and Avoidance
 [![Release Status](https://img.shields.io/github/v/release/PX4/avoidance)](https://github.com/PX4/avoidance/releases)
 [![Build Status](https://travis-ci.org/PX4/avoidance.svg?branch=master)](https://travis-ci.org/PX4/avoidance)

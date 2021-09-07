@@ -38,7 +38,8 @@ GlobalPlannerNode::GlobalPlannerNode(const ros::NodeHandle& nh, const ros::NodeH
   global_goal_pub_ = nh_.advertise<geometry_msgs::PointStamped>("/global_goal", 10);
   global_temp_goal_pub_ = nh_.advertise<geometry_msgs::PointStamped>("/global_temp_goal", 10);
   explored_cells_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("/explored_cells", 10);
-  mavros_waypoint_publisher_ = nh_.advertise<geometry_msgs::PoseStamped>("/mavros/setpoint_position/local", 10);
+  //mavros_waypoint_publisher_ = nh_.advertise<geometry_msgs::PoseStamped>("/mavros/setpoint_position/local", 10);
+  mavros_waypoint_publisher_ = nh_.advertise<geometry_msgs::PoseStamped>("/planner/setpoint_position/local", 10);
   mavros_obstacle_free_path_pub_ = nh_.advertise<mavros_msgs::Trajectory>("/mavros/trajectory/generated", 10);
   current_waypoint_publisher_ = nh_.advertise<geometry_msgs::PoseStamped>("/current_setpoint", 10);
   pointcloud_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/cloud_in", 10);
@@ -89,7 +90,7 @@ void GlobalPlannerNode::readParams() {
   initializeCameraSubscribers(camera_topics);
   global_planner_.goal_pos_ = GoalCell(start_pos_.x, start_pos_.y, start_pos_.z);
   double robot_radius;
-  nh_.param<double>("robot_radius", robot_radius, 0.5);
+  nh_.param<double>("robot_radius", robot_radius, 0.1);
   global_planner_.setFrame(frame_id_);
   global_planner_.setRobotRadius(robot_radius);
 }
@@ -104,6 +105,7 @@ void GlobalPlannerNode::initializeCameraSubscribers(std::vector<std::string>& ca
 
 // Sets a new goal, plans a path to it and publishes some info
 void GlobalPlannerNode::setNewGoal(const GoalCell& goal) {
+  ROS_INFO("--->>>>>>>>>>>>>> ALG GOAL POSITION INSIDE setNewGoal: [%f %f %f ] with radius %f", goal.xPos(), goal.yPos(), goal.zPos(), goal.radius_ );
   ROS_INFO("========== Set goal : %s ==========", goal.asString().c_str());
   global_planner_.setGoal(goal);
   publishGoal(goal);
@@ -118,7 +120,8 @@ void GlobalPlannerNode::popNextGoal() {
     setNewGoal(new_goal);
   } else if (global_planner_.goal_is_blocked_) {
     // Goal is blocked but there is no other goal in waypoints_, just stop
-    ROS_INFO("  STOP  ");
+    ROS_INFO("  STOP :: GOAL IS BLOCKED!  ");
+
     global_planner_.stop();
   }
 }
@@ -249,7 +252,8 @@ void GlobalPlannerNode::clickedPointCallback(const geometry_msgs::PointStamped& 
 }
 
 void GlobalPlannerNode::moveBaseSimpleCallback(const geometry_msgs::PoseStamped& msg) {
-  setNewGoal(GoalCell(msg.pose.position.x, msg.pose.position.y, clicked_goal_alt_, clicked_goal_radius_));
+   ROS_INFO(" ---- >>>>>>> ALG >>>>>>>>>GOAL POSITION INSDIE THE CALLBACK [ %f  , %f,  %f   ] with radius %f",  msg.pose.position.x, msg.pose.position.y, clicked_goal_alt_,clicked_goal_radius_ );
+    setNewGoal(GoalCell(msg.pose.position.x, msg.pose.position.y, clicked_goal_alt_, clicked_goal_radius_));
 }
 
 void GlobalPlannerNode::fcuInputGoalCallback(const mavros_msgs::Trajectory& msg) {

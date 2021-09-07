@@ -87,6 +87,8 @@ void LocalPlannerNodelet::InitializeNodelet() {
   goal_topic_sub_ = nh_.subscribe("/input/goal_position", 1, &LocalPlannerNodelet::updateGoalCallback, this);
   distance_sensor_sub_ = nh_.subscribe("/mavros/altitude", 1, &LocalPlannerNodelet::distanceSensorCallback, this);
   mavros_vel_setpoint_pub_ = nh_.advertise<geometry_msgs::Twist>("/mavros/setpoint_velocity/cmd_vel_unstamped", 10);
+  //ALG Edit(reverted): Changing this to a different topic so my util can take this position and add the yaw to it as wel:
+  //mavros_pos_setpoint_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("/local_planner_manager/setpoint_position/local", 10);
   mavros_pos_setpoint_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("/mavros/setpoint_position/local", 10);
   mavros_obstacle_free_path_pub_ = nh_.advertise<mavros_msgs::Trajectory>("/mavros/trajectory/generated", 10);
   mavros_obstacle_distance_pub_ = nh_.advertise<sensor_msgs::LaserScan>("/mavros/obstacle/send", 10);
@@ -325,7 +327,7 @@ void LocalPlannerNodelet::clickedGoalCallback(const geometry_msgs::PoseStamped& 
   goal_position_ = toEigen(msg.pose.position);
   /* Selecting the goal from Rviz sets x and y. Get the z coordinate set in
    * the launch file */
-  goal_position_.z() = local_planner_->getGoal().z();
+  //goal_position_.z() = local_planner_->getGoal().z();
 }
 
 void LocalPlannerNodelet::updateGoalCallback(const visualization_msgs::MarkerArray& msg) {

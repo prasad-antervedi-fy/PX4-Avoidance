@@ -41,6 +41,7 @@ void GlobalPlanner::setPose(const geometry_msgs::PoseStamped& new_pose) {
 // Sets a new mission goal
 void GlobalPlanner::setGoal(const GoalCell& goal) {
   goal_pos_ = goal;
+  ROS_INFO("------->>>>>>>>>>>>>>>>>>>>> GOAL POSITION INSIDE setGoal:    [%f %f %f] with radius %f ", goal.xPos(), goal.yPos(), goal.zPos(), goal.radius_);
   going_back_ = false;
   goal_is_blocked_ = false;
   heuristic_cache_.clear();
@@ -73,6 +74,9 @@ void GlobalPlanner::updateFullOctomap(octomap::AbstractOcTree* tree) {
   }
   octree_ = dynamic_cast<octomap::OcTree*>(tree);
   octree_resolution_ = octree_->getResolution();
+  //ALG Edit:
+  //octree_resolution_ = 0.25;
+  ROS_INFO("Octree resolution: %f", octree_resolution_);
 }
 
 // TODO: simplify and return neighbors
@@ -456,6 +460,7 @@ bool GlobalPlanner::findPath(std::vector<Cell>& path) {
       printf("(cost: %2.2f, dist: %2.2f, risk: %2.2f, smooth: %2.2f) \n", path_info.cost, path_info.dist,
              path_info.risk, path_info.smoothness);
       if (true || path_info.cost <= best_path_cost) {
+          ROS_INFO("Inside global_planner.cpp 463");
         // TODO: always use the newest path?
         best_path_cost = path_info.cost;
         path = new_path;
@@ -489,6 +494,7 @@ bool GlobalPlanner::getGlobalPath() {
   if (goal_must_be_free_ && getRisk(t) > max_cell_risk_) {
     // If goal is occupied, no path is published
     ROS_INFO("Goal position is occupied");
+    ROS_INFO("Risk at this particulat fucking cell is %f, when the max_cell_risk is %f", getRisk(t), max_cell_risk_);
     goal_is_blocked_ = true;
     return false;
   } else if (current_cell_blocked_) {

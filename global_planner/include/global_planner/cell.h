@@ -11,7 +11,7 @@
 
 namespace global_planner {
 
-static double CELL_SCALE = 1.0;
+static double CELL_SCALE = 0.5;
 
 class Cell {
  public:

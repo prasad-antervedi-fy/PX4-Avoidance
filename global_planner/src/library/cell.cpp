@@ -12,6 +12,7 @@ int Cell::xIndex() const { return std::get<0>(tpl_); }
 int Cell::yIndex() const { return std::get<1>(tpl_); }
 int Cell::zIndex() const { return std::get<2>(tpl_); }
 
+//FIXME: Here is the problem why the goal position is always a multiple of 0.5. as xIndex is whole number and CELL
 double Cell::xPos() const { return CELL_SCALE * (xIndex() + 0.5); }
 double Cell::yPos() const { return CELL_SCALE * (yIndex() + 0.5); }
 double Cell::zPos() const { return CELL_SCALE * (zIndex() + 0.5); }
